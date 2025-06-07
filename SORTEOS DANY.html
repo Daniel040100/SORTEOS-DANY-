@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SORTEOS DANY - ¡Tu Suerte Comienza Aquí!</title>
+    <!-- Favicon - A simple clover icon to match branding -->
+    <link rel="icon" href="https://placehold.co/32x32/54843D/FFFFFF?text=%E2%99%A3" type="image/x-icon">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome CDN for WhatsApp icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSC7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts - Inter for modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Hover.css for visual effects -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hover.css/2.3.1/css/hover-min.css">
+    <style>
+        /* Define custom colors based on the image */
+        :root {
+            --brand-orange: #F7A732; /* Background orange */
+            --brand-green: #54843D; /* "SORTEOS" green */
+            --brand-yellow: #FFD200; /* "Dany" yellow */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f8f8; /* Light background for contrast */
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--brand-orange);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #e0982c; /* Slightly darker orange */
+        }
+
+        /* Hero section background gradient based on brand orange */
+        .hero-bg {
+            background: linear-gradient(to right, var(--brand-orange), #ffc14d); /* Adjusted gradient */
+        }
+        /* Button hover effects */
+        .btn-primary {
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #e0982c; /* Deeper orange */
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        .btn-secondary {
+            transition: background-color 0.3s ease, transform 0.2s ease, border-color 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background-color: #fcefdc; /* Light orange background */
+            border-color: #d98f24; /* Deeper orange border */
+            transform: translateY(-2px);
+        }
+        /* Floating WhatsApp button */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            background-color: #25D366; /* Official WhatsApp Green */
+            color: #FFF;
+            border-radius: 9999px; /* rounded-full in Tailwind */
+            padding: 12px 20px; /* Adjust padding to make it wider for text */
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            text-decoration: none; /* Remove underline */
+        }
+        .whatsapp-float:hover {
+            transform: scale(1.05); /* Slightly smaller hover scale */
+            background-color: #1DA851; /* Darker green on hover */
+        }
+        .whatsapp-float i {
+            margin-right: 8px; /* Space between icon and text */
+            font-size: 28px; /* Adjust icon size */
+        }
+        /* Responsive adjustment for WhatsApp button */
+        @media (max-width: 767px) { /* Tailind 'md' breakpoint is 768px */
+            .whatsapp-float {
+                width: 60px; /* Force small circle on mobile */
+                height: 60px;
+                padding: 0; /* Remove padding */
+                /* Center content when only icon is visible */
+                justify-content: center;
+                align-items: center;
+            }
+            .whatsapp-float i {
+                margin-right: 0; /* No margin when text is hidden */
+            }
+            .whatsapp-float span {
+                display: none; /* Hide text on mobile */
+            }
+        }
+
+        /* Custom animation for ticket selection machine / visualization */
+        @keyframes fade-in-up {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .ticket-animation {
+            animation: fade-in-up 0.3s ease-out forwards;
+        }
+        .ticket-box {
+            @apply border border-gray-300 rounded-md text-center font-semibold cursor-pointer select-none transition-all duration-200 ease-in-out;
+        }
+        .ticket-box.available {
+            @apply bg-white text-gray-600 hover:bg-gray-100; /* Changed to bg-white */
+        }
+        .ticket-box.pending-mine {
+            @apply bg-green-500 text-white border-green-500 transform scale-105 shadow-md;
+        }
+        .ticket-box.pending-other {
+            @apply bg-yellow-500 text-white border-yellow-500 cursor-not-allowed;
+        }
+        .ticket-box.sold {
+            @apply bg-red-500 text-white border-red-500 cursor-not-allowed;
+        }
+        .ticket-box.disabled {
+            @apply opacity-50 cursor-not-allowed;
+        }
+
+        /* Modal styling */
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        /* Custom style for select dropdown icon */
+        .select-with-icon {
+            /* Using a base64 encoded SVG for the dropdown arrow */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1.5em 1.5em; /* Adjust icon size */
+            padding-right: 2.5rem; /* Make space for the icon */
+            -webkit-appearance: none; /* Remove default arrow on WebKit browsers */
+            -moz-appearance: none; /* Remove default arrow on Firefox */
+            appearance: none; /* Remove default arrow */
+        }
+
+        /* Fix for sticky header covering content when navigating to anchor links */
+        section[id] {
+            scroll-margin-top: 7.5rem; /* Approximately 120px, adjust based on header height */
+        }
+    </style>
+</head>
+<body class="relative">
+
+    <!-- Floating WhatsApp Button (Now with official logo and CTA) -->
+    <a href="https://wa.me/5213320496878?text=%C2%A1Hola%21%20Me%20Gustar%C3%ADa%20Hablar%20Con%20Un%20Asesor%20De%20Sorteos%20Dany" class="whatsapp-float" target="_blank" aria-label="Contactar por WhatsApp">
+        <i class="fab fa-whatsapp text-white text-2xl"></i>
+        <span class="ml-2 text-white text-base font-semibold hidden md:block">Atención Personalizada</span>
+    </a>
+
+    <!-- Header Section - Reintroduced nav bar with logo left and hamburger right -->
+    <header class="bg-gray-900 text-white p-4 shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto flex justify-between items-center flex-wrap">
+            <!-- Logo on the left (h-10 sm:h-12 md:h-16 lg:h-20 for responsive scaling) -->
+            <a href="#inicio" class="flex items-center">
+                <img src="https://raw.githubusercontent.com/Daniel040100/Sorteos-/main/sorteos_dany_-removebg-preview.png" alt="Logotipo de Sorteos Dany" class="h-10 sm:h-12 md:h-16 lg:h-20 w-auto object-contain">
+            </a>
+            <!-- Hamburger menu button on the right (visible on smaller screens) -->
+            <div class="block lg:hidden">
+                <button id="nav-toggle" class="flex items-center px-3 py-2 border rounded-md text-white border-white hover:text-gray-200 hover:border-gray-200 focus:outline-none focus:ring-2 focus:ring-white">
+                    <svg class="fill-current h-4 w-4" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Menu</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v15z"/></svg>
+                </button>
+            </div>
+            <!-- Navigation links - hidden on mobile by default, shown on large screens, aligned right -->
+            <div class="w-full flex-grow lg:flex lg:items-center lg:w-auto hidden" id="nav-content">
+                <ul class="text-sm lg:flex-grow lg:flex lg:justify-end lg:items-center">
+                    <li><a href="#inicio" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-300 mr-4 p-2 rounded-md transition duration-300">Inicio</a></li>
+                    <li><a href="#faq" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-300 mr-4 p-2 rounded-md transition duration-300">Preguntas Frecuentes</a></li>
+                    <li><a href="#verificador" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-300 mr-4 p-2 rounded-md transition duration-300">Verificador de Boletos</a></li>
+                    <li><a href="#pagos" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-300 mr-4 p-2 rounded-md transition duration-300">Métodos de Pago</a></li>
+                    <li><a href="#comprar" class="block mt-4 lg:inline-block lg:mt-0 text-white py-2 px-5 rounded-lg transition duration-300 btn-primary shadow-md" style="background-color: var(--brand-green);">Comprar Boletos</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Inicio Section -->
+        <section id="inicio" class="hero-bg text-white py-16 md:py-24 text-center rounded-b-lg shadow-xl">
+            <div class="container mx-auto px-4">
+                <h1 class="text-4xl md:text-6xl font-extrabold mb-4 leading-tight drop-shadow-lg">
+                    ¡Tu Próximo Gran Premio de $10,000 MXN te Espera!
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 opacity-90">
+                    En SORTEOS DANY, solo hay <span class="font-bold">100 boletos (del 00 al 99)</span>. <br>
+                    ¡Tu suerte está a solo $200 MXN!
+                </p>
+                <a href="#comprar" class="inline-block text-white font-bold py-3 px-8 rounded-full text-lg shadow-lg hover:bg-gray-100 transition duration-300 btn-primary" style="background-color: var(--brand-green);">
+                    Compra tu boleto ahora
+                    <span class="ml-2">&#x27A4;</span> <!-- Right arrow -->
+                </a>
+
+                <!-- Current Raffle Display -->
+                <div class="mt-16 bg-white bg-opacity-25 backdrop-filter backdrop-blur-sm p-6 md:p-8 rounded-xl shadow-lg max-w-2xl mx-auto border border-white border-opacity-40">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-4">Sorteo Activo</h2>
+                    <p class="text-lg md:text-xl font-semibold mb-2">¡Gana $10,000 MXN!</p>
+                    <p class="text-base md:text-lg mb-4">El ganador se elige con los <span class="font-bold">últimos 2 números</span> del Premio Mayor de la Lotería Nacional.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Preguntas Frecuentes (FAQ) -->
+        <section id="faq" class="py-16 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Preguntas Frecuentes</h2>
+
+                <div class="max-w-3xl mx-auto">
+                    <!-- FAQ Item 1 -->
+                    <div class="mb-4 bg-white p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
+                        <button class="flex justify-between items-center w-full text-left font-semibold text-lg focus:outline-none" onclick="toggleAccordion('faq1')" style="color: var(--brand-green);">
+                            <span>¿Cómo funciona el sorteo?</span>
+                            <span id="icon-faq1" class="text-2xl transition-transform duration-300 transform rotate-0">+</span>
+                        </button>
+                        <div id="faq1" class="mt-4 text-gray-700 hidden transition-all duration-300 ease-in-out">
+                            <p>Nuestros sorteos son de solo 100 boletos (del 00 al 99). El ganador se determina con los últimos 2 números del Premio Mayor de un sorteo específico de la Lotería Nacional Mexicana. Es un proceso 100% transparente y justo.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 2 -->
+                    <div class="mb-4 bg-white p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
+                        <button class="flex justify-between items-center w-full text-left font-semibold text-lg focus:outline-none" onclick="toggleAccordion('faq2')" style="color: var(--brand-green);">
+                            <span>¿Qué métodos de pago aceptan?</span>
+                            <span id="icon-faq2" class="text-2xl transition-transform duration-300 transform rotate-0">+</span>
+                        </button>
+                        <div id="faq2" class="mt-4 text-gray-700 hidden">
+                            <p>Aceptamos transferencia bancaria (SPEI) y depósitos en OXXO. Así aseguramos que tu compra sea cómoda y segura.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 3 - Updated Content -->
+                    <div class="mb-4 bg-white p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
+                        <button class="flex justify-between items-center w-full text-left font-semibold text-lg focus:outline-none" onclick="toggleAccordion('faq3')" style="color: var(--brand-green);">
+                            <span>¿Cómo se entrega el premio de $10,000 MXN?</span>
+                            <span id="icon-faq3" class="text-2xl transition-transform duration-300 transform rotate-0">+</span>
+                        </button>
+                        <div id="faq3" class="mt-4 text-gray-700 hidden">
+                            <p>Si eres el afortunado ganador, nos pondremos en contacto contigo de inmediato. El premio de $10,000 MXN se transfiere directamente a tu cuenta bancaria de forma rápida y segura.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 4 -->
+                    <div class="mb-4 bg-white p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
+                        <button class="flex justify-between items-center w-full text-left font-semibold text-lg focus:outline-none" onclick="toggleAccordion('faq4')" style="color: var(--brand-green);">
+                            <span>¿El sorteo es legal y seguro?</span>
+                            <span id="icon-faq4" class="text-2xl transition-transform duration-300 transform rotate-0">+</span>
+                        </button>
+                        <div id="faq4" class="mt-4 text-gray-700 hidden">
+                            <p>Sí, en SORTEOS DANY garantizamos total transparencia y legalidad. Nos basados en los resultados oficiales de la Lotería Nacional Mexicana, una institución pública y de confianza, para determinar a nuestros ganadores. Tu seguridad es nuestra prioridad.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Verificador de Boletos -->
+        <section id="verificador" class="py-16" style="background-color: #fcefdc;"> <!-- Light orange background -->
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Verificador de Boletos</h2>
+                <div class="max-w-xl mx-auto bg-white p-8 rounded-lg shadow-xl border-t-4" style="border-color: var(--brand-green);">
+                    <p class="text-gray-700 mb-6 text-center">Introduce tu número de boleto (ej: 05, 78) para verificar si eres el afortunado ganador.</p>
+                    <div class="mb-6">
+                        <label for="ticketNumber" class="block text-gray-700 text-sm font-bold mb-2">Número de Boleto (00-99):</label>
+                        <input type="text" id="ticketNumber" placeholder="Ej: 05" class="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-opacity-75 transition duration-300" style="border-color: var(--brand-orange); focus-ring-color: var(--brand-orange);">
+                        <p class="text-xs text-gray-500 mt-1">Solo los últimos dos dígitos de tu boleto.</p>
+                    </div>
+                    <button id="verifyTicketBtn" class="w-full text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline btn-primary shadow-md" style="background-color: var(--brand-green);">
+                        Verificar Boleto
+                    </button>
+
+                    <div id="verificationResult" class="mt-8 p-4 bg-gray-100 border border-gray-200 rounded-lg hidden">
+                        <!-- Results will be displayed here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Métodos de Pago -->
+        <section id="pagos" class="py-16 bg-gray-100">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Métodos de Pago</h2>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-8 justify-center">
+                    <!-- Transferencia Bancaria / SPEI -->
+                    <div class="bg-white p-6 rounded-lg shadow-lg border-t-4 transform transition duration-300 hover:scale-105 hover:shadow-xl" style="border-color: var(--brand-orange);">
+                        <h3 class="text-2xl font-bold mb-4 flex items-center" style="color: var(--brand-green);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-banknote mr-3">
+                                <rect width="20" height="12" x="2" y="6" rx="2" />
+                                <circle cx="12" cy="12" r="2" />
+                                <path d="M6 12h.01M18 12h.01" />
+                            </svg>
+                            Transferencia Bancaria (SPEI)
+                        </h3>
+                        <p class="text-gray-700 mb-4">La forma más rápida y segura para realizar tu pago.</p>
+                        <div class="space-y-3 text-gray-700 text-base">
+                            <p class="flex items-center">
+                                <span class="font-bold mr-2">Entidad financiera:</span>
+                                Santander <img src="https://github.com/Daniel040100/Sorteos-/blob/main/5a27cdfd52b1cc0d022e6d5c.png?raw=true" alt="Logotipo de Santander" class="ml-2 h-6 w-auto inline-block">
+                            </p>
+                            <div class="flex items-center mb-2">
+                                <span class="font-bold mr-2">Cuenta CLABE:</span>
+                                <input type="text" value="014320568070108535" readonly id="clabeInput" class="bg-gray-100 p-2 rounded-md font-extrabold text-sm select-all max-w-xs">
+                                <button onclick="copyToClipboard('clabeInput')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 p-2 rounded-md transition-colors duration-200 ml-2 shrink-0" title="Copiar CLABE">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy">
+                                        <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                                        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v2"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="flex items-center mb-2">
+                                <span class="font-bold mr-2">Tarjeta:</span>
+                                <input type="text" value="5579 1003 0443 7245" readonly id="cardInput" class="bg-gray-100 p-2 rounded-md font-extrabold text-sm select-all max-w-xs">
+                                <button onclick="copyToClipboard('cardInput')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 p-2 rounded-md transition-colors duration-200 ml-2 shrink-0" title="Copiar Tarjeta">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy">
+                                        <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                                        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v2"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <p><span class="font-bold mr-2">Titular:</span> SERGIO DANIEL GAETA SANDOVAL</p>
+                        </div>
+                        <!-- Leyenda para concepto de pago -->
+                        <p class="text-red-600 font-extrabold text-lg mt-4 text-center">
+                            ¡ESCRIBE ÚNICAMENTE TU NOMBRE EN EL CONCEPTO DE PAGO!
+                        </p>
+                    </div>
+
+                    <!-- Depósito en OXXO -->
+                    <div class="bg-white p-6 rounded-lg shadow-lg border-t-4 transform transition duration-300 hover:scale-105 hover:shadow-xl" style="border-color: var(--brand-orange);">
+                        <h3 class="text-2xl font-bold mb-4 flex items-center" style="color: var(--brand-green);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-bag mr-3">
+                                <path d="M6 2L3 7v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7l-3-5Z" />
+                                <path d="M3 7h18" />
+                                <path d="M16 10a4 4 0 0 1-8 0" />
+                            </svg>
+                            Depósito en OXXO
+                        </h3>
+                        <p class="text-gray-700 mb-4">Práctico y accesible en cualquier sucursal.</p>
+                        <div class="space-y-3 text-gray-700 text-base">
+                            <p class="flex items-center">
+                                <span class="font-bold mr-2">Entidad financiera:</span>
+                                Santander <img src="https://github.com/Daniel040100/Sorteos-/blob/main/5a27cdfd52b1cc0d022e6d5c.png?raw=true" alt="Logotipo de Santander" class="ml-2 h-6 w-auto inline-block">
+                            </p>
+                            <div class="flex items-center mb-2">
+                                <span class="font-bold mr-2">Tarjeta:</span>
+                                <input type="text" value="5579 1003 0443 7245" readonly id="cardInputOxxo" class="bg-gray-100 p-2 rounded-md font-extrabold text-sm select-all max-w-xs">
+                                <button onclick="copyToClipboard('cardInputOxxo')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 p-2 rounded-md transition-colors duration-200 ml-2 shrink-0" title="Copiar Tarjeta">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy">
+                                        <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                                        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v2"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <p><span class="font-bold mr-2">Titular:</span> SERGIO DANIEL GAETA SANDOVAL</p>
+                        </div>
+                        <!-- Leyenda para comprobante de pago OXXO -->
+                        <p class="text-red-600 font-extrabold text-lg mt-4 text-center">
+                            ¡ESCRIBE ÚNICAMENTE TU NOMBRE CON PLUMA Y LETRA LEGIBLE EN EL COMPROBANTE DE PAGO!
+                        </p>
+                    </div>
+                </div>
+                <div class="text-center mt-12">
+                    <p class="text-gray-600 text-lg">¿Tienes dudas sobre los métodos de pago? <a href="https://wa.me/5213320496878?text=%C2%A1Hola%21%20Me%20Gustar%C3%ADa%20Hablar%20Con%20Un%20Asesor%20De%20Sorteos%20Dany" target="_blank" class="font-semibold hover:underline" style="color: var(--brand-green);">¡Contáctanos por WhatsApp!</a></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Comprar Boletos -->
+        <section id="comprar" class="py-16" style="background-color: #fcefdc;"> <!-- Light orange background -->
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">¡Compra tus Boletos Aquí!</h2>
+                <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-xl border-t-4" style="border-color: var(--brand-green);">
+                    <p class="text-gray-700 mb-6 text-center text-lg">Hay solo <span class="font-bold">100 boletos (del 00 al 99)</span> disponibles. ¡Mientras más compras, más oportunidades tienes de ganar esos $10,000 MXN!</p>
+                    <p class="text-center text-gray-600 mb-8">El costo de cada boleto es de <span class="font-bold text-lg" style="color: var(--brand-green);">$200 MXN</span>.</p>
+
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">Selecciona la cantidad o usa el "Selector de la Suerte"</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <button class="ticket-qty-btn hvr-grow font-bold py-3 px-4 rounded-lg shadow-md transition duration-300 focus:outline-none focus:ring-2 focus:ring-opacity-75" style="background-color: var(--brand-orange); color: white;" data-qty="1">1 Boleto</button>
+                        <button class="ticket-qty-btn hvr-grow font-bold py-3 px-4 rounded-lg shadow-md transition duration-300 focus:outline-none focus:ring-2 focus:ring-2 focus:ring-opacity-75" style="background-color: var(--brand-orange); color: white;" data-qty="2">2 Boletos</button>
+                        <button class="ticket-qty-btn hvr-grow font-bold py-3 px-4 rounded-lg shadow-md transition duration-300 focus:outline-none focus:ring-2 focus:ring-2 focus:ring-opacity-75" style="background-color: var(--brand-orange); color: white;" data-qty="5">5 Boletos</button>
+                        <button class="ticket-qty-btn hvr-grow font-bold py-3 px-4 rounded-lg shadow-md transition duration-300 focus:outline-none focus:ring-2 focus:ring-2 focus:ring-opacity-75" style="background-color: var(--brand-orange); color: white;" data-qty="10">10 Boletos</button>
+                    </div>
+
+                    <div class="flex items-center justify-center mb-6">
+                        <label for="customQuantity" class="mr-4 text-gray-700 font-semibold">Cantidad Personalizada:</label>
+                        <input type="number" id="customQuantity" min="1" max="100" value="1" class="shadow appearance-none border rounded-lg py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-opacity-75 transition duration-300 w-28" style="border-color: var(--brand-orange); focus-ring-color: var(--brand-orange);">
+                        <button id="setCustomQuantity" class="ml-4 text-white font-bold py-3 px-6 rounded-lg shadow-md hvr-grow transition duration-300 btn-primary" style="background-color: var(--brand-green);">Establecer</button>
+                    </div>
+
+                    <div class="mb-8 p-6 bg-gray-50 border border-gray-200 rounded-lg text-center">
+                        <p class="text-xl font-semibold text-gray-800">Boletos Seleccionados:</p>
+                        <div id="selectedTicketsDisplay" class="mt-4 flex flex-wrap justify-center gap-2 max-h-48 overflow-y-auto p-2 border border-gray-200 rounded-md bg-white">
+                            <!-- Selected tickets (e.g., 00, 01, 02) will be displayed here dynamically -->
+                        </div>
+                        <p class="text-3xl font-bold mt-6" style="color: var(--brand-green);">Total: $<span id="totalPrice">0.00</span> MXN</p>
+                    </div>
+
+                    <!-- Visualización de datos de boletos (00-99) -->
+                    <div class="mb-8 p-6 bg-blue-50 border border-blue-200 rounded-lg text-center">
+                        <h3 class="text-xl font-bold text-blue-700 mb-4">Visualización de Boletos (00-99)</h3>
+                        <p class="text-gray-700 font-bold text-red-700 mb-4">
+                            ¡EL APARTADO DE TUS BOLETOS SOLO DURA 30 MINUTOS DESPUES DE SU SELECCION!
+                        </p>
+                        <p class="text-gray-700 mb-2">Boletos Disponibles <span class="bg-white text-gray-600 px-2 py-1 rounded-md border border-gray-300">Blancos</span>.</p>
+                        <p class="text-gray-700 mb-2">Boletos apartados <span class="bg-yellow-500 text-white px-2 py-1 rounded-md border border-yellow-500">amarillos</span>.</p>
+                        <p class="text-gray-700 mb-4">Boletos Vendidos <span class="bg-red-500 text-white px-2 py-1 rounded-md border border-red-500">Rojos</span>.</p>
+                        <div id="allTicketsGrid" class="grid grid-cols-10 gap-1 sm:gap-2 justify-center max-h-64 overflow-y-auto p-2">
+                            <!-- Grid of 100 tickets (00-99) -->
+                        </div>
+                    </div>
+
+                    <button id="proceedToPurchase" class="w-full text-white font-bold py-4 px-4 rounded-lg text-xl shadow-lg btn-primary hvr-grow" style="background-color: var(--brand-green);">
+                        Comprar Boletos Ahora
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nueva Sección: Confirmar Pago Manual (Admin) -->
+        <section id="manual-sell" class="py-16 bg-gray-200">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Confirmar Pago Manual</h2>
+                <p class="text-gray-700 mb-6 text-center max-w-xl mx-auto">
+                    Introduce el número de boleto que deseas marcar como **Vendido** (rojo) después de confirmar el pago manual del cliente.
+                </p>
+                <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-xl border-t-4" style="border-color: var(--brand-orange);">
+                    <div class="mb-6">
+                        <label for="manualTicketNumber" class="block text-gray-700 text-sm font-bold mb-2">Número de Boleto (00-99):</label>
+                        <input type="text" id="manualTicketNumber" placeholder="Ej: 05" class="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-opacity-75 transition duration-300" style="border-color: var(--brand-orange); focus-ring-color: var(--brand-orange);">
+                        <p class="text-xs text-gray-500 mt-1">El boleto se marcará como VENDIDO.</p>
+                    </div>
+                    <button id="markAsSoldBtn" class="w-full text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline btn-primary hvr-grow shadow-md" style="background-color: var(--brand-green);">
+                        Marcar Boleto como Vendido
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-gray-900 text-white py-8 rounded-t-lg shadow-lg">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+                <!-- Footer Logo - Adjusted size -->
+                <a href="#inicio" class="flex items-center mb-4 md:mb-0">
+                    <img src="https://raw.githubusercontent.com/Daniel040100/Sorteos-/main/sorteos_dany_-removebg-preview.png" alt="Logotipo de Sorteos Dany" class="h-8 sm:h-10 w-auto object-contain">
+                </a>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300" aria-label="Facebook">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook">
+                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300" aria-label="Instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-instagram">
+                            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+                        </svg>
+                    </a>
+                    <!-- TikTok icon removed -->
+                </div>
+            </div>
+            <p class="text-gray-400 text-sm">&copy; 2024 SORTEOS DANY. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Global Modal Placeholder -->
+    <div id="globalModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] hidden modal-overlay">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full mx-4 text-center">
+            <h3 id="modalTitle" class="text-xl font-bold mb-4 text-gray-800"></h3>
+            <p id="modalMessage" class="text-gray-700 mb-6"></p>
+            <button id="modalCloseBtn" class="py-2 px-6 rounded-lg btn-primary" style="background-color: var(--brand-green); color: white;">
+                Cerrar
+            </button>
+        </div>
+    </div>
+
+    <!-- Purchase Form Modal -->
+    <div id="purchaseFormModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1001] hidden modal-overlay">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full mx-4 text-center relative">
+            <button id="closePurchaseFormModal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl font-bold">
+                &times;
+            </button>
+            <h3 class="text-xl font-bold mb-4 text-gray-800">LLENA TUS DATOS Y HAZ CLIC EN COMPRAR BOLETOS AHORA</h3>
+            <!-- Improved typography and centering for selected tickets text -->
+            <p class="text-lg font-semibold text-gray-800 mb-4 text-center">Boletos seleccionados: <span id="formSelectedTickets" class="font-extrabold text-green-600 text-xl"></span></p>
+
+            <form id="purchaseForm" class="text-left">
+                <div class="mb-4">
+                    <label for="whatsappNumber" class="block text-gray-700 text-sm font-bold mb-2">Número de WhatsApp:</label>
+                    <input type="tel" id="whatsappNumber" name="whatsappNumber" placeholder="Ej: 5512345678" class="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-opacity-75" style="border-color: var(--brand-orange); focus-ring-color: var(--brand-orange);" required>
+                </div>
+                <div class="mb-4">
+                    <label for="firstName" class="block text-gray-700 text-sm font-bold mb-2">Nombre(s):</label>
+                    <input type="text" id="firstName" name="firstName" placeholder="Tu nombre(s)" class="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-opacity-75" style="border-color: var(--brand-orange); focus-ring-color: var(--brand-orange);" required>
+                </div>
+                <div class="mb-4">
+                    <label for="lastName" class="block text-gray-700 text-sm font-bold mb-2">Apellido(s):</label>
+                    <input type="text" id="lastName" name="lastName" placeholder="Tu apellido(s)" class="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-opacity-75" style="border-color: var(--brand-orange); focus-ring-color: var(--brand-orange);" required>
+                </div>
+                <div class="mb-6">
+                    <label for="state" class="block text-gray-700 text-sm font-bold mb-2">Selecciona tu Estado:</label>
+                    <select id="state" name="state" class="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-opacity-75 select-with-icon" style="border-color: var(--brand-orange); focus-ring-color: var(--brand-orange);" required>
+                        <option value="">Selecciona un estado</option>
+                        <!-- Mexican states will be populated here by JavaScript -->
+                    </select>
+                </div>
+                <button type="submit" class="w-full text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline btn-primary shadow-md" style="background-color: var(--brand-green);">
+                    Comprar Boletos Ahora
+                </button>
+            </form>
+            <p class="text-gray-600 text-sm mt-4">Al finalizar te enviaremos a WhatsApp para continuar con tu compra.</p>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, writeBatch, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global variables for Firebase services
+        let app;
+        let db;
+        let auth;
+        let currentUserId = null;
+        let isAuthReady = false;
+
+        // Ensure firebase config is available
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // Firebase Initialization
+        async function initializeFirebase() {
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        currentUserId = user.uid;
+                        console.log("Firebase: Usuario autenticado con UID:", currentUserId);
+                    } else {
+                        console.log("Firebase: Nadie autenticado. Intentando autenticación anónima...");
+                        try {
+                            if (initialAuthToken) {
+                                await signInWithCustomToken(auth, initialAuthToken);
+                            } else {
+                                await signInAnonymously(auth);
+                            }
+                            currentUserId = auth.currentUser.uid;
+                            console.log("Firebase: Autenticación anónima exitosa con UID:", currentUserId);
+                        } catch (error) {
+                            console.error("Firebase: Error en la autenticación:", error);
+                            window.showModal('Error de Autenticación', 'No se pudo iniciar sesión en el servicio de boletos. Intenta recargar la página.');
+                        }
+                    }
+                    isAuthReady = true;
+                    // Once auth is ready, fetch and listen to ticket statuses
+                    if (db && currentUserId) {
+                        setupTicketStatusListener();
+                    }
+                });
+            } catch (error) {
+                console.error("Error inicializando Firebase:", error);
+                window.showModal('Error de Inicio', 'No se pudo cargar la aplicación. Por favor, intente de nuevo más tarde.');
+            }
+        }
+
+        // --- Ticket Status Management with Firestore ---
+        const TICKET_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes in milliseconds
+        let allTicketsData = {}; // Cache for current ticket states from Firestore
+
+        async function setupTicketStatusListener() {
+            const ticketsCollectionRef = collection(db, `artifacts/${appId}/public/data/ticketStatuses`);
+            
+            // Initial check to populate if collection is empty
+            const docSnap = await getDoc(doc(ticketsCollectionRef, "00")); // Check if at least one ticket exists
+            if (!docSnap.exists()) {
+                console.log("Firestore: La colección de boletos está vacía. Inicializando...");
+                await initializeAllTicketsInFirestore();
+            }
+
+            // Set up a real-time listener for all tickets
+            onSnapshot(ticketsCollectionRef, (snapshot) => {
+                const batch = writeBatch(db);
+                const now = Date.now();
+                let needsUpdate = false;
+
+                snapshot.docs.forEach(docSnap => {
+                    const data = docSnap.data();
+                    const ticketNumber = data.number;
+                    const status = data.status;
+                    const selectedBy = data.selectedBy;
+                    const selectionTime = data.selectionTime ? data.selectionTime.toMillis() : null;
+
+                    if (status === "pending" && selectionTime) {
+                        if (now > (selectionTime + TICKET_TIMEOUT_MS)) {
+                            // Ticket expired, release it
+                            console.log(`Firestore: Boleto ${ticketNumber} expiró, liberando...`);
+                            batch.update(doc(ticketsCollectionRef, ticketNumber), {
+                                status: "available",
+                                selectedBy: null,
+                                selectionTime: null
+                            });
+                            needsUpdate = true;
+                        }
+                    }
+                    allTicketsData[ticketNumber] = { ...data, needsRelease: (status === "pending" && selectionTime && now > (selectionTime + TICKET_TIMEOUT_MS)) };
+                });
+
+                if (needsUpdate) {
+                    batch.commit().then(() => {
+                        console.log("Firestore: Boletos expirados liberados con éxito.");
+                        updateTicketDisplay(); // Re-render after batch commit
+                    }).catch(error => {
+                        console.error("Firestore: Error al liberar boletos expirados:", error);
+                        window.showModal('Error', 'No se pudieron liberar algunos boletos expirados.');
+                    });
+                } else {
+                    updateTicketDisplay(); // Only re-render if no batch commit is needed
+                }
+            }, (error) => {
+                console.error("Firestore: Error al escuchar cambios en boletos:", error);
+                window.showModal('Error de Conexión', 'No se pudieron obtener las actualizaciones de los boletos en tiempo real.');
+            });
+        }
+
+        // Initialize all 100 tickets in Firestore as "available" if they don't exist
+        async function initializeAllTicketsInFirestore() {
+            const batch = writeBatch(db);
+            const ticketsCollectionRef = collection(db, `artifacts/${appId}/public/data/ticketStatuses`);
+
+            for (let i = 0; i < 100; i++) {
+                const ticketNumber = String(i).padStart(2, '0');
+                const ticketDocRef = doc(ticketsCollectionRef, ticketNumber);
+                batch.set(ticketDocRef, {
+                    number: ticketNumber,
+                    status: "available",
+                    selectedBy: null,
+                    selectionTime: null
+                }, { merge: true }); // Use merge: true to avoid overwriting existing data if any
+            }
+            try {
+                await batch.commit();
+                console.log("Firestore: Boletos inicializados en Firestore.");
+            } catch (error) {
+                console.error("Firestore: Error al inicializar boletos:", error);
+                window.showModal('Error de Inicialización', 'No se pudieron crear los boletos iniciales en la base de datos.');
+            }
+        }
+
+
+        // Function to update the display of all tickets in the grid based on allTicketsData
+        function updateTicketDisplay() {
+            const allTicketsGrid = document.getElementById('allTicketsGrid');
+            allTicketsGrid.innerHTML = ''; // Clear existing grid
+
+            const selectedMineTickets = [];
+
+            // Sort all tickets for consistent display
+            const sortedTicketNumbers = Object.keys(allTicketsData).sort((a, b) => parseInt(a) - parseInt(b));
+
+            sortedTicketNumbers.forEach(ticketNumber => {
+                const ticketData = allTicketsData[ticketNumber];
+                const ticketBox = document.createElement('div');
+                // Apply hvr-grow class for hover effect
+                ticketBox.classList.add('ticket-box', 'p-1', 'md:p-2', 'hvr-grow'); 
+
+                ticketBox.textContent = ticketNumber;
+                ticketBox.dataset.number = ticketNumber;
+
+                // Add classes based on status and ownership
+                if (ticketData.status === "available") {
+                    ticketBox.classList.add('available');
+                    ticketBox.addEventListener('click', () => toggleTicketSelection(ticketNumber));
+                } else if (ticketData.status === "pending") {
+                    if (ticketData.selectedBy === currentUserId) {
+                        ticketBox.classList.add('pending-mine');
+                        ticketBox.addEventListener('click', () => toggleTicketSelection(ticketNumber)); // Allow deselecting own pending
+                        selectedMineTickets.push(ticketNumber);
+                    } else {
+                        ticketBox.classList.add('pending-other');
+                        // No click listener for other users' pending tickets
+                    }
+                } else if (ticketData.status === "sold") {
+                    ticketBox.classList.add('sold');
+                    // No click listener for sold tickets
+                }
+                allTicketsGrid.appendChild(ticketBox);
+            });
+
+            // Update selectedTicketsDisplay and Total Price based on currently selected tickets by the user
+            selectedTicketNumbers = selectedMineTickets; // Sync local selected with Firestore pending (mine)
+            updateSelectedTicketsDisplayAndPrice();
+        }
+
+        // Function to update the display of selected tickets and total price
+        function updateSelectedTicketsDisplayAndPrice() {
+            currentTicketQuantity = selectedTicketNumbers.length;
+            const selectedTicketsDisplay = document.getElementById('selectedTicketsDisplay');
+            const totalPriceDisplay = document.getElementById('totalPrice');
+
+            selectedTicketsDisplay.innerHTML = ''; // Clear previous tickets
+            if (selectedTicketNumbers.length === 0) {
+                selectedTicketsDisplay.innerHTML = '<p class="text-gray-500">Ningún boleto seleccionado aún.</p>';
+            } else {
+                selectedTicketNumbers.forEach(number => {
+                    const ticketElement = document.createElement('span');
+                    ticketElement.textContent = number;
+                    ticketElement.className = 'text-sm font-semibold px-3 py-1 rounded-full ticket-animation shadow-sm';
+                    ticketElement.style.backgroundColor = 'var(--brand-yellow)'; /* Yellow for selected numbers in summary */
+                    ticketElement.style.color = 'var(--brand-green)'; /* Green text for selected numbers in summary */
+                    selectedTicketsDisplay.appendChild(ticketElement);
+                });
+            }
+            totalPriceDisplay.textContent = (currentTicketQuantity * ticketPrice).toFixed(2);
+
+            // Update the count for custom quantity input
+            const customQuantityInput = document.getElementById('customQuantity');
+            customQuantityInput.value = currentTicketQuantity;
+        }
+
+        // Price per ticket
+        const ticketPrice = 200;
+        let currentTicketQuantity = 0;
+        let selectedTicketNumbers = []; // Store the actual selected 2-digit numbers by the current user
+
+        // --- Core Ticket Selection Logic (Firestore Integrated) ---
+        async function toggleTicketSelection(ticketNumber) {
+            if (!isAuthReady || !currentUserId) {
+                window.showModal('Cargando...', 'Por favor, espere mientras la aplicación se conecta.');
+                return;
+            }
+
+            const ticketDocRef = doc(db, `artifacts/${appId}/public/data/ticketStatuses`, ticketNumber);
+            
+            try {
+                // Get the current state of the ticket directly from Firestore for atomic check
+                const docSnap = await getDoc(ticketDocRef);
+                const ticketData = docSnap.data();
+
+                if (selectedTicketNumbers.includes(ticketNumber)) {
+                    // User is deselecting their own pending ticket
+                    await setDoc(ticketDocRef, {
+                        status: "available",
+                        selectedBy: null,
+                        selectionTime: null
+                    }, { merge: true });
+                    console.log(`Firestore: Boleto ${ticketNumber} liberado (deseleccionado).`);
+                } else {
+                    // User is trying to select a ticket
+                    if (ticketData.status === "available") {
+                        await setDoc(ticketDocRef, {
+                            status: "pending",
+                            selectedBy: currentUserId,
+                            selectionTime: serverTimestamp()
+                        }, { merge: true });
+                        console.log(`Firestore: Boleto ${ticketNumber} marcado como pendiente.`);
+                    } else if (ticketData.status === "pending" && ticketData.selectedBy === currentUserId) {
+                        // Already pending by current user, do nothing or reconfirm. Handled by previous if block.
+                        console.log(`Firestore: Boleto ${ticketNumber} ya está pendiente por ti.`);
+                    } else if (ticketData.status === "pending" && ticketData.selectedBy !== currentUserId) {
+                        window.showModal('Boleto Ocupado', `El boleto ${ticketNumber} ya está apartado por otro usuario.`);
+                        return; // Prevent selection if someone else has it pending
+                    } else if (ticketData.status === "sold") {
+                        window.showModal('Boleto Vendido', `El boleto ${ticketNumber} ya ha sido vendido.`);
+                        return; // Prevent selection if already sold
+                    }
+                }
+                // UI update happens via onSnapshot listener, which re-renders allTicketsGrid
+            } catch (error) {
+                console.error("Firestore: Error al actualizar el estado del boleto:", error);
+                window.showModal('Error al seleccionar', 'No se pudo actualizar el estado del boleto. Intenta de nuevo.');
+            }
+        }
+
+        async function selectMultipleTickets(quantityToSelect) {
+            if (!isAuthReady || !currentUserId) {
+                window.showModal('Cargando...', 'Por favor, espere mientras la aplicación se conecta.');
+                return;
+            }
+
+            // First, get all current tickets from Firestore to know what's available
+            const allAvailableTickets = Object.values(allTicketsData).filter(
+                ticket => ticket.status === "available" || (ticket.status === "pending" && ticket.selectedBy === currentUserId)
+            ).map(ticket => ticket.number);
+
+            // Deselect existing selections that are not part of the target quantity
+            const numToDeselect = Math.max(0, selectedTicketNumbers.length - quantityToSelect);
+            const ticketsToDeselect = selectedTicketNumbers.slice(0, numToDeselect);
+
+            // Select new random tickets until desired quantity is met
+            const numToSelectNew = Math.max(0, quantityToSelect - (selectedTicketNumbers.length - numToDeselect));
+            const newTicketsToSelect = [];
+            const currentlyAvailableForNewSelection = allAvailableTickets.filter(num => !selectedTicketNumbers.includes(num));
+
+            for (let i = 0; i < numToSelectNew; i++) {
+                if (currentlyAvailableForNewSelection.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * currentlyAvailableForNewSelection.length);
+                    const ticketNumber = currentlyAvailableForNewSelection.splice(randomIndex, 1)[0];
+                    newTicketsToSelect.push(ticketNumber);
+                } else {
+                    break; // No more available tickets to select
+                }
+            }
+
+            const batch = writeBatch(db);
+            const committedSelectedNumbers = [...selectedTicketNumbers]; // Start with current selections
+
+            // Process deselections
+            for (const ticketNum of ticketsToDeselect) {
+                const ticketDocRef = doc(db, `artifacts/${appId}/public/data/ticketStatuses`, ticketNum);
+                batch.update(ticketDocRef, {
+                    status: "available",
+                    selectedBy: null,
+                    selectionTime: null
+                });
+                const index = committedSelectedNumbers.indexOf(ticketNum);
+                if (index > -1) {
+                    committedSelectedNumbers.splice(index, 1);
+                }
+            }
+
+            // Process new selections
+            for (const ticketNum of newTicketsToSelect) {
+                const ticketDocRef = doc(db, `artifacts/${appId}/public/data/ticketStatuses`, ticketNum);
+                const currentTicketData = allTicketsData[ticketNum];
+                if (currentTicketData.status === "available") { // Double check availability
+                    batch.update(ticketDocRef, {
+                        status: "pending",
+                        selectedBy: currentUserId,
+                        selectionTime: serverTimestamp()
+                    });
+                    committedSelectedNumbers.push(ticketNum);
+                }
+            }
+
+            try {
+                await batch.commit();
+                console.log(`Firestore: Lote de boletos actualizados. Cantidad final seleccionada: ${committedSelectedNumbers.length}`);
+                selectedTicketNumbers = committedSelectedNumbers.sort((a,b) => parseInt(a) - parseInt(b));
+                // UI update will be handled by the onSnapshot listener
+            } catch (error) {
+                console.error("Firestore: Error al aplicar el lote de actualizaciones:", error);
+                window.showModal('Error al seleccionar boletos', 'Ocurrió un problema al reservar tus boletos. Algunos podrían no haberse reservado.');
+            }
+        }
+
+
+        // --- UI Event Listeners and General Logic ---
+        // Global Modal Functions - (defined outside DOMContentLoaded for broader scope)
+        let globalModal;
+        let modalTitle;
+        let modalMessage;
+        let modalCloseBtn;
+
+        window.showModal = function(title, message) { // Made global
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            globalModal.classList.remove('hidden');
+        }
+
+        // Utility function for copying text to clipboard
+        window.copyToClipboard = async function(elementId) { // Made global
+            const inputElement = document.getElementById(elementId);
+            if (!inputElement) {
+                console.error(`Element with ID ${elementId} not found.`);
+                window.showModal('Error', 'Elemento no encontrado para copiar.');
+                return;
+            }
+
+            const textToCopy = inputElement.value;
+            let copiedSuccessfully = false;
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                try {
+                    await navigator.clipboard.writeText(textToCopy);
+                    copiedSuccessfully = true;
+                    window.showModal('Copiado', 'Información copiada al portapapeles.');
+                } catch (err) {
+                    console.error('Error al copiar con navigator.clipboard:', err);
+                }
+            }
+
+            if (!copiedSuccessfully) {
+                try {
+                    inputElement.select();
+                    inputElement.setSelectionRange(0, 99999);
+                    document.execCommand('copy');
+                    window.showModal('Copiado', 'Información copiada al portapapeles (método alternativo).');
+                    copiedSuccessfully = true;
+                } catch (err) {
+                    console.error('Error al copiar con document.execCommand:', err);
+                    window.showModal('Error al copiar', 'No se pudo copiar la información. Por favor, cópiala manualmente.');
+                } finally {
+                    window.getSelection().removeAllRanges();
+                    inputElement.blur();
+                }
+            }
+        }
+
+        // FAQ Accordion Function
+        window.toggleAccordion = function(id) { // Made global
+            const element = document.getElementById(id);
+            const icon = document.getElementById('icon-' + id);
+            if (element) {
+                if (element.classList.contains('hidden')) {
+                    element.classList.remove('hidden');
+                    element.classList.add('block');
+                    if (icon) icon.classList.add('rotate-45');
+                } else {
+                    element.classList.remove('block');
+                    element.classList.add('hidden');
+                    if (icon) icon.classList.remove('rotate-45');
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Initialize global modal elements
+            globalModal = document.getElementById('globalModal');
+            modalTitle = document.getElementById('modalTitle');
+            modalMessage = document.getElementById('modalMessage');
+            modalCloseBtn = document.getElementById('modalCloseBtn');
+
+            if (modalCloseBtn) {
+                modalCloseBtn.addEventListener('click', () => {
+                    globalModal.classList.add('hidden');
+                });
+            }
+
+            // Navigation Toggle for Mobile
+            const navToggle = document.getElementById('nav-toggle');
+            const navContent = document.getElementById('nav-content');
+            if (navToggle && navContent) {
+                navToggle.addEventListener('click', function() {
+                    navContent.classList.toggle('hidden');
+                });
+            }
+
+            // Initialize Firebase and start listening to tickets
+            await initializeFirebase();
+
+
+            // --- Ticket Verifier Logic (Client-side Simulation for 00-99 tickets) ---
+            const verifyTicketBtn = document.getElementById('verifyTicketBtn');
+            const ticketNumberInput = document.getElementById('ticketNumber');
+            const verificationResultDiv = document.getElementById('verificationResult');
+
+            // Simulated winning numbers (e.g., from Lotería Nacional's last 2 digits)
+            const winningNumber = "78"; // Example: If Lotería Nacional's prize ends in 12378, winner is 78
+            
+            if (verifyTicketBtn && ticketNumberInput && verificationResultDiv) {
+                verifyTicketBtn.addEventListener('click', () => {
+                    const inputNumber = ticketNumberInput.value.trim();
+
+                    if (inputNumber === '') {
+                        window.showModal('Error de Verificación', 'Por favor, introduce tu número de boleto (00-99).');
+                        verificationResultDiv.classList.add('hidden');
+                        return;
+                    }
+
+                    const formattedInput = inputNumber.padStart(2, '0');
+
+                    // Check current status from Firestore cache first
+                    const ticketData = allTicketsData[formattedInput];
+                    let resultsHtml = '';
+                    let foundResult = false;
+
+                    if (ticketData) {
+                         if (ticketData.status === "sold") {
+                            // If sold, check if it matches the winning number
+                            if (formattedInput === winningNumber) {
+                                resultsHtml = `<p class="text-green-700 font-bold text-lg mb-2">¡FELICIDADES! Tu boleto ${formattedInput} es GANADOR. Has ganado $10,000 MXN en Efectivo.</p>`;
+                            } else {
+                                resultsHtml = `<p class="text-red-700 text-lg mb-2">Tu boleto ${formattedInput} ha sido vendido. El número ganador fue ${winningNumber}.</p>`;
+                            }
+                            foundResult = true;
+                        } else if (ticketData.status === "pending") {
+                            resultsHtml = `<p class="text-yellow-700 text-lg mb-2">Tu boleto ${formattedInput} está actualmente apartado. El número ganador fue ${winningNumber}.</p>`;
+                            foundResult = true;
+                        } else if (ticketData.status === "available") {
+                            resultsHtml = `<p class="text-gray-700 text-lg mb-2">Tu boleto ${formattedInput} está disponible. El número ganador fue ${winningNumber}.</p>`;
+                            foundResult = true;
+                        }
+                    } else {
+                        // Fallback if ticket data not in cache, implies invalid or not yet initialized ticket.
+                        if (formattedInput.length === 2 && !isNaN(parseInt(formattedInput)) && parseInt(formattedInput) >= 0 && parseInt(formattedInput) <= 99) {
+                             resultsHtml = `<p class="text-gray-700 text-lg mb-2">Boleto ${formattedInput} no encontrado en el sistema o está disponible. El número ganador fue ${winningNumber}.</p>`;
+                             foundResult = true;
+                        } else {
+                            resultsHtml = `<p class="text-red-700 text-lg mb-2">Boleto ${inputNumber}: Inválido. Por favor, introduce un número entre 00 y 99.</p>`;
+                        }
+                    }
+
+                    if (foundResult) {
+                        verificationResultDiv.innerHTML = resultsHtml;
+                        verificationResultDiv.classList.remove('hidden');
+                        verificationResultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else {
+                        window.showModal('Sin Resultados', 'No se encontraron resultados para el boleto ingresado. Asegúrate de que sea un número válido (00-99).');
+                        verificationResultDiv.classList.add('hidden');
+                    }
+                });
+            }
+
+
+            // --- Buy Tickets UI Logic ---
+            const ticketQtyButtons = document.querySelectorAll('.ticket-qty-btn');
+            const customQuantityInput = document.getElementById('customQuantity');
+            const setCustomQuantityBtn = document.getElementById('setCustomQuantity');
+            const proceedToPurchaseBtn = document.getElementById('proceedToPurchase');
+
+            // Event listeners for quantity buttons
+            ticketQtyButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const qty = parseInt(button.dataset.qty);
+                    selectMultipleTickets(qty);
+                });
+            });
+
+            // Event listener for custom quantity button
+            if (setCustomQuantityBtn) {
+                setCustomQuantityBtn.addEventListener('click', () => {
+                    const qty = parseInt(customQuantityInput.value);
+                    if (qty > 0 && qty <= 100) {
+                        selectMultipleTickets(qty);
+                    } else if (qty > 100) {
+                        window.showModal('Cantidad Excedida', 'Solo hay 100 boletos disponibles (del 00 al 99).');
+                        customQuantityInput.value = 100;
+                        selectMultipleTickets(100);
+                    } else {
+                        window.showModal('Error de Cantidad', 'Por favor, introduce una cantidad válida (entre 1 y 100).');
+                    }
+                });
+            }
+
+            // --- Purchase Form Modal Logic ---
+            const purchaseFormModal = document.getElementById('purchaseFormModal');
+            const formSelectedTicketsDisplay = document.getElementById('formSelectedTickets');
+            const closePurchaseFormModalBtn = document.getElementById('closePurchaseFormModal');
+            const purchaseForm = document.getElementById('purchaseForm');
+
+            // Populate Mexican states dropdown
+            const mexicanStates = [
+                "Aguascalientes", "Baja California", "Baja California Sur", "Campeche", "Chiapas",
+                "Chihuahua", "Ciudad de México", "Coahuila de Zaragoza", "Colima", "Durango",
+                "Estado de México", "Guanajuato", "Guerrero", "Hidalgo", "Jalisco",
+                "Michoacán de Ocampo", "Morelos", "Nayarit", "Nuevo León", "Oaxaca",
+                "Puebla", "Querétaro", "Quintana Roo", "San Luis Potosí", "Sinaloa",
+                "Sonora", "Tabasco", "Tamaulipas", "Tlaxcala", "Veracruz de Ignacio de la Llave",
+                "Yucatán", "Zacatecas"
+            ];
+            const stateSelect = document.getElementById('state');
+            mexicanStates.forEach(state => {
+                const option = document.createElement('option');
+                option.value = state;
+                option.textContent = state;
+                stateSelect.appendChild(option);
+            });
+
+            if (proceedToPurchaseBtn && purchaseFormModal) {
+                proceedToPurchaseBtn.addEventListener('click', () => {
+                    if (selectedTicketNumbers.length === 0) {
+                        window.showModal('Error de Compra', 'Por favor, selecciona al menos un boleto para comprar.');
+                        return;
+                    }
+                    formSelectedTicketsDisplay.textContent = selectedTicketNumbers.join(', ');
+                    purchaseFormModal.classList.remove('hidden');
+                });
+            }
+
+            if (closePurchaseFormModalBtn && purchaseFormModal) {
+                closePurchaseFormModalBtn.addEventListener('click', () => {
+                    purchaseFormModal.classList.add('hidden');
+                    purchaseForm.reset(); // Clear the form when closing
+                });
+            }
+
+            if (purchaseForm) {
+                purchaseForm.addEventListener('submit', async (e) => {
+                    e.preventDefault(); // Prevent default form submission
+
+                    const whatsappNumber = document.getElementById('whatsappNumber').value;
+                    const firstName = document.getElementById('firstName').value;
+                    const lastName = document.getElementById('lastName').value;
+                    const state = document.getElementById('state').value;
+                    const total = (selectedTicketNumbers.length * ticketPrice).toFixed(2);
+
+                    if (!whatsappNumber || !firstName || !lastName || !state) {
+                        window.showModal('Error de Formulario', 'Por favor, completa todos los campos del formulario.');
+                        return;
+                    }
+
+                    // --- IMPORTANT CHANGE: Tickets remain "pending" after form submission ---
+                    // No batch update here to set to "sold". They stay "pending" by this user.
+
+                    const message = `Hola, Quiero pagar mis boletos para el sorteo #01 $10,000 MXN\n\n` +
+                                   `NOMBRE: ${firstName} ${lastName}\n` +
+                                   `BOLETOS: ${selectedTicketNumbers.join(', ')}\n` +
+                                   `TOTAL A PAGAR: $${total} MXN\n` +
+                                   `CUENTAS DE PAGO AQUÍ: https://2gx3mtp8jqd4dcv7837vmp82rwiwdq2srlaleb0e6waol9z0ig-h763805538.scf.usercontent.goog/d3722b20-8417-453d-8224-9759b6a90253#pagos\n` +
+                                   `CELULAR: ${whatsappNumber}\n\n` +
+                                   `*EL APARTADO DE TUS BOLETOS SOLO DURA 30 MINUTOS DESPUES DE SU SELECCION*\n\n` + // New message line
+                                   `Lo que sigue es enviar foto del comprobante de pago por aquí! *FAVOR DE MANDAR SU COMPROBANTE Y NO VOLVER A ESCRIBIR* (esto para no retrasar el protocolo de confirmación) SOLO ESPERA RESPUESTA (tardamos entre 1 y 2 horas en responder a partir de tu ultimo mensaje) ¡MUCHA SUERTE TE DESEA SORTEOS DANY!`;
+                    
+                    const whatsappLink = `https://wa.me/5213320496878?text=${encodeURIComponent(message)}`;
+
+                    purchaseFormModal.classList.add('hidden');
+                    window.showModal(
+                        '¡Compra Casi Lista!',
+                        'Hemos recibido tus datos y APARTADO tus boletos. Te redirigiremos a WhatsApp para finalizar tu compra. ¡No cierres esta ventana!'
+                    );
+
+                    setTimeout(() => {
+                        window.open(whatsappLink, '_blank');
+                        purchaseForm.reset();
+                        // selectedTicketNumbers are intentionally NOT cleared here, as they remain "pending-mine"
+                        // The UI update for "pending-mine" is handled by the onSnapshot listener
+                    }, 2000);
+                });
+            }
+
+            // --- New Manual Sell Functionality ---
+            const manualTicketNumberInput = document.getElementById('manualTicketNumber');
+            const markAsSoldBtn = document.getElementById('markAsSoldBtn');
+
+            if (markAsSoldBtn && manualTicketNumberInput) {
+                markAsSoldBtn.addEventListener('click', async () => {
+                    if (!isAuthReady || !db) {
+                        window.showModal('Cargando...', 'Por favor, espere mientras la aplicación se conecta.');
+                        return;
+                    }
+
+                    const ticketNum = manualTicketNumberInput.value.trim();
+                    if (ticketNum === '' || ticketNum.length > 2 || isNaN(parseInt(ticketNum)) || parseInt(ticketNum) < 0 || parseInt(ticketNum) > 99) {
+                        window.showModal('Error de Boleto', 'Por favor, introduce un número de boleto válido (00-99).');
+                        return;
+                    }
+
+                    const formattedTicketNum = ticketNum.padStart(2, '0');
+                    const ticketDocRef = doc(db, `artifacts/${appId}/public/data/ticketStatuses`, formattedTicketNum);
+
+                    try {
+                        const docSnap = await getDoc(ticketDocRef);
+                        if (!docSnap.exists()) {
+                            window.showModal('Error', `El boleto ${formattedTicketNum} no existe en la base de datos.`);
+                            return;
+                        }
+
+                        const currentTicketData = docSnap.data();
+                        if (currentTicketData.status === "sold") {
+                            window.showModal('Atención', `El boleto ${formattedTicketNum} ya está marcado como VENDIDO.`);
+                            return;
+                        }
+
+                        await updateDoc(ticketDocRef, {
+                            status: "sold",
+                            selectedBy: null, // Clear selection ownership
+                            selectionTime: null // Clear selection time
+                        });
+                        window.showModal('Éxito', `El boleto ${formattedTicketNum} ha sido marcado como VENDIDO.`);
+                        manualTicketNumberInput.value = ''; // Clear input
+                        // UI update will happen via onSnapshot listener
+                    } catch (error) {
+                        console.error("Firestore: Error al marcar boleto como vendido:", error);
+                        window.showModal('Error', 'No se pudo marcar el boleto como vendido. Intenta de nuevo.');
+                    }
+                });
+            }
+
+
+            // --- Pop-up / Banner Suggestion (Simple example) ---
+            setTimeout(() => {
+                window.showModal(
+                    '¡Atención!',
+                    '🎉 ¡Participa por $10,000 MXN Por Únicamente $200 Pesitos, SOLO 100 BOLETOS. Cada boleto es una oportunidad de GANAR ¡Mucha Suerte!🎉'
+                );
+            }, 3000); // Shows pop-up after 3 seconds
+
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+
+                    // Close mobile menu if open after click
+                    if (window.innerWidth < 1024) {
+                        navContent.classList.add('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
